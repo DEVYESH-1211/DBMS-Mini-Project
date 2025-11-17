@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Signup - EMS</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .signup-container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 350px;
+            text-align: center;
+        }
+        .signup-container h1 {
+            margin-bottom: 20px;
+        }
+        .signup-container input,
+        .signup-container select,
+        .signup-container button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .signup-container button {
+            background: #007bff;
+            color: #fff;
+            cursor: pointer;
+            border: none;
+        }
+        .signup-container button:hover {
+            background: #0056b3;
+        }
+        .login-link {
+            margin-top: 10px;
+            display: block;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <h1>Signup</h1>
+        <form action="/signup" method="post">
+            <input name="name" placeholder="Name" required>
+            <input name="roll_no" placeholder="Roll Number">
+            <input name="email" type="email" placeholder="Email" required>
+            <input name="phone_number" placeholder="Phone Number">
+            <input name="department" placeholder="Department">
+
+            <!-- Year Dropdown -->
+            <select name="year" required>
+                <option value="" disabled selected>Select Year</option>
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year">3rd Year</option>
+                <option value="4th Year">4th Year</option>
+            </select>
+
+            <input name="password" type="password" placeholder="Password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        <a class="login-link" href="/login.html">Already have an account? Login</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Admin Dashboard - EMS</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6fb;
+      margin: 0;
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+    }
+    .card {
+      background: white;
+      width: 900px;
+      border-radius: 8px;
+      padding: 24px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+    h1 { margin-top: 0; }
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    label { font-size: 13px; color: #333; margin-bottom: 6px; display:block;}
+    input, select {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #dcdfe6;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .full { grid-column: 1 / -1; }
+    button {
+      background: #5c6bc0;
+      color: #fff;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      background: #fff;
+    }
+    th, td {
+      border: 1px solid #eee;
+      padding: 8px 10px;
+      text-align: left;
+      font-size: 14px;
+    }
+    th { background: #fafafa; }
+    .top-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+
+    .logout-btn {
+  background: #d9534f;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.logout-btn:hover {
+  opacity: 0.9;
+}
+
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="top-row">
+  <h1>Admin Dashboard</h1>
+  <div>
+    <a href="/events.html" style="margin-right: 12px;">View Public Events</a>
+    <button onclick="window.location.href='/login'" class="logout-btn">Logout</button>
+  </div>
+</div>
+
+
+    <h3>Add New Event</h3>
+    <form id="addEventForm" action="/add-event" method="post">
+      <div>
+        <label>Event Name</label>
+        <input name="event_name" required>
+      </div>
+
+      <div>
+        <label>Event Date</label>
+        <input type="date" name="event_date" required>
+      </div>
+
+      <div>
+        <label>Venue</label>
+        <input name="venue" required>
+      </div>
+
+      <div>
+        <label>Registration Fee</label>
+        <input type="number" step="0.01" name="registration_fee" required>
+      </div>
+
+      <div>
+        <label>Registration Closes On</label>
+        <input type="date" name="registration_closes_on" required>
+      </div>
+
+      <div>
+        <label>Max Participants</label>
+        <input type="number" name="max_participants" required>
+      </div>
+
+      <div class="full">
+        <button type="submit">Add Event</button>
+      </div>
+    </form>
+
+    <h3>Existing Events</h3>
+    <table id="eventsTable">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Date</th>
+          <th>Venue</th>
+          <th>Fee</th>
+          <th>Closes On</th>
+          <th>Max</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    // show success alert if ?success=1
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('success') === '1') {
+      alert('Event added successfully!');
+      // remove query param from URL without reloading
+      const url = new URL(window.location);
+      url.search = '';
+      window.history.replaceState({}, '', url);
+    }
+
+    // fetch and populate events table
+    fetch('/events-data')
+      .then(r => r.json())
+      .then(data => {
+        const tbody = document.querySelector('#eventsTable tbody');
+        tbody.innerHTML = '';
+        data.forEach(ev => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${escapeHtml(ev.event_name)}</td>
+            <td>${ev.event_date}</td>
+            <td>${escapeHtml(ev.venue)}</td>
+            <td>${ev.reg_fee}</td>
+            <td>${ev.reg_close_date}</td>
+            <td>${ev.max_participants}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      })
+      .catch(err => console.error('events fetch error', err));
+
+    // small escape to avoid naive HTML injection
+    function escapeHtml(s) {
+      if (!s) return '';
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+  </script>
+</body>
+</html>
